@@ -1,33 +1,32 @@
-\documentclass[a4paper,11pt]{book}
+\documentclass[11pt]{report}							
 \usepackage{import}
-\usepackage{example}
+\usepackage{style}
+%\usepackage[utf8]{inputenc}
+\pagenumbering{roman}
 
 \usepackage{makeidx}
 \makeindex
 
-\begin{document}
+\begin{document} 
 
-\frontmatter
 \import{./}{title.tex}
 
-\clearpage
-\thispagestyle{empty}
+\import{sections/}{abstract.tex}
+\newpage
+
+\import{sections/}{acknowledgements.tex}
+\newpage
 
 \tableofcontents
+\newpage
 
-\mainmatter
-\chapter{First chapter}
-\import{sections/}{section1-1.tex}
-\import{sections/}{section1-2}
+\import{sections/}{acronyms.tex}
+\newpage
 
-\chapter{Additional chapter}
-\input{sections/section2-1.tex}
+\pagenumbering{arabic}
+\pagestyle{headings} 
 
-\chapter{Last chapter}
-\include{sections/section3-1}
-
-\backmatter
-
-\import{./}{bibliography.tex}
+\chapter{Gravitational Wave Detectors}
+\section{Introduction}
 
 \end{document}
