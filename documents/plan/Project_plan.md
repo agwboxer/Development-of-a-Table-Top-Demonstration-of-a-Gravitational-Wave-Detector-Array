@@ -1,5 +1,5 @@
 # Project plan
-**Project - Development of a table-top demonstration of a gravitational-wave detector**
+**Project - Development of a table-top demonstration of a gravitational-wave detector array**
 
 >Author: Alex Boxer\
 >Supervisor: Gregory Ashton
