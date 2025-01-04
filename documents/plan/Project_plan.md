@@ -12,11 +12,11 @@ This report explores how multiple observatories collaborate to identify the loca
 
 | Week  | Task                                                                                  |
 |-------|---------------------------------------------------------------------------------------|
-| 18    |** Break ground on hardware** - Build ripple tank based on design schematics made over Christmas and work on circuitry |
+| 18    |**Break ground on hardware** - Build ripple tank based on design schematics made over Christmas and work on circuitry |
 | 19    | **Continue work on hardware** - focus on making sure the sensors are working and able to communicate with Raspberry Pi |
 | 20    | **Develop code** which translates the sensor data into usable data for triangulation - can start a week late if hardware proves to be challenging |
 | 21    | **Continue work on software** - develop triangulation code                               |
 | 22    | **Finalise** any parts of the project                                                    |
-| 23    |** Write report and bug fix **                                                            |
+| 23    |**Write report and bug fix**                                                            |
 | 24    | **Write report and bug fix**                                                             |
 
