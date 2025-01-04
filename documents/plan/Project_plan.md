@@ -20,3 +20,6 @@ This report explores how multiple observatories collaborate to identify the loca
 | 23    |**Write report and bug fix**                                                            |
 | 24    | **Write report and bug fix**                                                             |
 
+## Aims of project
+
+The goal of the projet is to demonstrate how arrays of GW detectors across the world collaborate to detect the origin of GWs in space. For this demonstration I use a 2D projection of the GW detector array, a ripple tank is used to hold a volume of water which will represent the medium in which the GWs will travel through. Sensors will be placed on the sides of the tank where they will measure time period and wavelength, the time displacement measured by each sensor will be used along with wave speed to triangulate the source of the wave.
