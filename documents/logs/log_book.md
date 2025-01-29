@@ -10,7 +10,7 @@
 - [ ] Find a better solution for the wave detector
 - [ ] Work out structure of report
 
-**Progress & Notes:**
+**Progress & Notes:** \\
 Summary of work:
 - Timing model is still WIP - cont. for next week. Decided to use YOLOv8 which is able to identify objects and determine properties of moving object in real time. Model to be trained once wave detector is worked on. Report going along fine cont. for next week.
 Challenges:
