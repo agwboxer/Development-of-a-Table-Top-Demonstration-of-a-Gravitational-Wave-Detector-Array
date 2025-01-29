@@ -39,13 +39,19 @@ Learnings:
 
 **Progress & Notes:**  
 Summary of work:
--   
-Challenges:
+
 -
+
+Challenges:
+
+-
+
 Learnings:
+
 -
 
 **Next Steps:**  
+
 - 
 
 ---
@@ -59,13 +65,19 @@ Learnings:
 
 **Progress & Notes:**  
 Summary of work:
--   
-Challenges:
+
 -
+
+Challenges:
+
+-
+
 Learnings:
+
 -
 
 **Next Steps:**  
+
 - 
 
 ---
