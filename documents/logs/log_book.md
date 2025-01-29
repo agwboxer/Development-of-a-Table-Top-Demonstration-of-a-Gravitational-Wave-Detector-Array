@@ -16,6 +16,7 @@
 Summary of work: 
 
 - Timing model is still WIP - cont. for next week. Decided to use YOLOv8 which is able to identify objects and determine properties of moving object in real time. Model to be trained once wave detector is worked on. Report going along fine cont. for next week.
+- YOLOv8 is successful and tracking works perfectly.
   
 Challenges: 
 
@@ -28,6 +29,7 @@ Learnings:
 **Next Steps:**  
 
 - Continue on timing model and YOLOv8 code. Report structure needs to be done soon and start writing first few chapters. Create bobs ready to be 3D printed.
+- Use tracking of ball to work with timing model and produce triangulation results.
 
 ---
 
