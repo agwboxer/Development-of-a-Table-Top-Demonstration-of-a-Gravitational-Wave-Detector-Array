@@ -3,6 +3,7 @@
 
 ## Week 1
 **Date:** 23-29/01/2025
+
 **Goals for the Week:**  
 - [ ] Create timing model and work on triangulation problem  
 - [ ] Work out how the sensor will be read by the computer
