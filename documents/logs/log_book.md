@@ -31,12 +31,15 @@ Learnings:
 - [ ] Task 3  
 
 **Progress & Notes:**  
-- Summary of work completed  
-- Challenges faced  
-- Key learnings  
+Summary of work:
+-   
+Challenges:
+-
+Learnings:
+-
 
 **Next Steps:**  
-- Plan for next week  
+- 
 
 ---
 
@@ -48,13 +51,14 @@ Learnings:
 - [ ] Task 3  
 
 **Progress & Notes:**  
-- Summary of work completed  
-- Challenges faced  
-- Key learnings  
+Summary of work:
+-   
+Challenges:
+-
+Learnings:
+-
 
 **Next Steps:**  
-- Plan for next week  
+- 
 
 ---
-
-*(Continue for additional weeks as needed)*
