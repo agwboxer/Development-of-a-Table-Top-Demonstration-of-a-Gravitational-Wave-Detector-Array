@@ -41,7 +41,7 @@ plt.contour(X, Y, Z13, levels=[0], colors='g', linewidths=2, label="Hyperbola 13
 plt.contour(X, Y, Z23, levels=[0], colors='r', linewidths=2, label="Hyperbola 23")
 
 # Mark the reference points
-plt.scatter([x1, x2, x3], [y1, y2, y3], color='black', marker='o', label="Reference Points")
+plt.scatter([x1, x2, x3], [y1, y2, y3], color='black', marker='o', label="Detectors")
 
 # Axes settings
 plt.axhline(0, color='black', linewidth=0.5)
@@ -51,7 +51,7 @@ plt.xlim(0, L)
 plt.ylim(0, W)
 plt.gca().set_aspect('equal')
 plt.legend()
-plt.title("Hyperbolic Locus from Time Differences")
+
 
 # Show plot
 plt.show()
