@@ -20,7 +20,7 @@ def main():
 
     os.makedirs(output_folder, exist_ok=True)  # Create output folder if not exists
 
-    model = YOLO('trained.pt')
+    model = YOLO('trained-model.pt')
     trajectory = []  
     central_positions = []  
 
