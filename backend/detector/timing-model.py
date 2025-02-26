@@ -4,41 +4,48 @@ import numpy as np
 import random
 
 def detect_large_displacements(json_path, output_json="times.json", fps=30, threshold=5):
+    
     with open(json_path, 'r') as f:
         data = json.load(f)
+    
+    
+    if not isinstance(data, list) or not all(isinstance(item, dict) and "cx" in item and "cy" in item for item in data):
+        raise ValueError("Input JSON file must be a list of dictionaries with 'cx' and 'cy' keys.")
     
     times = []
     distances = []
     large_displacement_times = []
     
+   
     for i in range(1, len(data)):
-        distance = np.sqrt((data[i]["cx"] - data[i-1]["cx"])**2 + (data[i]["cy"] - data[i-1]["cy"])**2)
+        dx = data[i]["cx"] - data[i-1]["cx"]
+        dy = data[i]["cy"] - data[i-1]["cy"]
+        distance = np.sqrt(dx**2 + dy**2)
         distances.append(distance)
+        
         time = i / fps
         times.append(time)
+        
         
         if distance > threshold:
             large_displacement_times.append(time)
     
-    plt.figure(figsize=(8, 6))
-    plt.plot(times, distances, marker='o', linestyle='-', color='b', label='Displacement')
-    plt.axhline(y=threshold, color='r', linestyle='--', label=f'Threshold = {threshold}')
-    
-    plt.xlabel("Time (seconds)")
-    plt.ylabel("Displacement (pixels)")
-    plt.title("Displacement between Consecutive Bob Positions")
-    plt.legend()
-
-    
     plt.show()
+    
     
     if large_displacement_times:
         first_time = large_displacement_times[0]
+        
+        
         displacement_times = {
             "t1": first_time,
+            "t1_uncertainty": 1 / fps,  
             "t2": first_time + random.uniform(0.1, 0.5),
-            "t3": first_time + random.uniform(0.5, 1.0)
+            "t2_uncertainty": 1 / fps,  
+            "t3": first_time + random.uniform(0.5, 1.0),
+            "t3_uncertainty": 1 / fps   
         }
+        
         with open(output_json, 'w') as f:
             json.dump(displacement_times, f, indent=4)
     
