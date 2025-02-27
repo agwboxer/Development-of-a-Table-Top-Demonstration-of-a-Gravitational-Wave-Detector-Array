@@ -20,7 +20,7 @@ def main():
 
     os.makedirs(output_folder, exist_ok=True)  # Create output folder if not exists
 
-    model = YOLO('trained-model.pt')
+    model = YOLO('model2.pt')
     trajectory = []  
     central_positions = []  
 
@@ -63,4 +63,4 @@ def main():
 if __name__ == '__main__':
     main()
 
-# To run: python bob-tracker.py --image_folder {file path} --output_folder {file path}
+# Run python bob-tracker.py --image_folder {path} --output_folder {path}
