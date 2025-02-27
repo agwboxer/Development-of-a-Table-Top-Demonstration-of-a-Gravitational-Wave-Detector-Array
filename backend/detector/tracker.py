@@ -62,3 +62,5 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+# To run: python bob-tracker.py --image_folder {file path} --output_folder {file path}
