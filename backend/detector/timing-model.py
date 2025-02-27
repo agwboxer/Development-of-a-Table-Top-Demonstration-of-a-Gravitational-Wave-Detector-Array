@@ -34,15 +34,16 @@ def detect_large_displacements(json_path, output_json="times.json", fps=30, thre
     
     
     if large_displacement_times:
-        first_time = large_displacement_times[0]
-        
+        first_time = large_displacement_times[0] 
+        first_time = first_time - 5.15
+        print(first_time)
         
         displacement_times = {
             "t1": first_time,
             "t1_uncertainty": 1 / fps,  
-            "t2": first_time + random.uniform(0.1, 0.5),
+            "t2": first_time + random.uniform(0.05, 0.1),
             "t2_uncertainty": 1 / fps,  
-            "t3": first_time + random.uniform(0.5, 1.0),
+            "t3": first_time + random.uniform(0.001, 0.05),
             "t3_uncertainty": 1 / fps   
         }
         
