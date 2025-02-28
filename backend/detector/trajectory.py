@@ -18,8 +18,6 @@ def plot_distance(json_path):
         dy = data[i]["cy"] - data[i-1]["cy"]
         distance = np.sqrt(dx**2 + dy**2)
         
-        # Calculate the uncertainty in distance using error propagation
-        # Uncertainty in dx and dy is ±1 pixel
         uncertainty_dx = 1
         uncertainty_dy = 1
         distance_error = np.sqrt((dx / distance * uncertainty_dx)**2 + (dy / distance * uncertainty_dy)**2)
@@ -38,5 +36,5 @@ def plot_distance(json_path):
     plt.show()
 
 if __name__ == "__main__":
-    json_file = "output.json"  # Change this to the correct path if needed
+    json_file = "output.json"
     plot_distance(json_file)
