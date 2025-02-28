@@ -1,4 +1,5 @@
 import numpy as np
+from scipy.optimize import minimize
 import matplotlib.pyplot as plt
 import json
 
@@ -7,93 +8,143 @@ with open('data.json', 'r') as f:
     data = json.load(f)
 
 with open('uncertainties.json', 'r') as f:
-    uncertainties = json.load(f) 
+    uncertainties = json.load(f)
+
+# Prompt the user to choose which file to use for times
+choice = input("Choose the source of times (1 for times.json, 2 for times_reversed.json): ").strip()
+
+if choice == '1':
+    with open('times.json', 'r') as f:
+        times_data = json.load(f)
+    t1 = times_data["t1"]
+    dt1 = times_data["t1_uncertainty"]
+    t2 = times_data["t2"]
+    dt2 = times_data["t2_uncertainty"]
+    t3 = times_data["t3"]
+    dt3 = times_data["t3_uncertainty"]
+elif choice == '2':
+    with open('times_reversed.json', 'r') as f:
+        times_data = json.load(f)
+    t1 = times_data["t1"]
+    dt1 = times_data["dt1"]
+    t2 = times_data["t2"]
+    dt2 = times_data["dt2"]
+    t3 = times_data["t3"]
+    dt3 = times_data["dt3"]
+else:
+    print("Invalid choice. Please enter 1 or 2.")
+    exit()
 
 # Extract data and uncertainties
 dC, d1, d2, d3 = uncertainties
 constants, C1, C2, C3 = data
 
-x1, y1, t1 = C1
-x2, y2, t2 = C2
-x3, y3, t3 = C3
-L, W, v = constants
+x1, y1, _ = C1
+x2, y2, _ = C2 
+x3, y3, _ = C3  
+L, W, v = constants  # Length, Width, wave speed
 
 dL, dW, dv = dC
-dx1, dy1, dt1 = d1
-dx2, dy2, dt2 = d2
-dx3, dy3, dt3 = d3
+dx1, dy1, _ = d1 
+dx2, dy2, _ = d2 
+dx3, dy3, _ = d3 
 
-# Calculate delta_d and their uncertainties
-delta_d_12 = v * (t2 - t1)
-d_delta_d_12 = np.sqrt( (dv*(t2 - t1))**2 + (v*dt2)**2 + (v*dt1)**2 )
+# Detector positions
+detector_positions = np.array([
+    [x1, y1],  # Detector 1
+    [x2, y2],  # Detector 2
+    [x3, y3]   # Detector 3
+])
 
-delta_d_13 = v * (t3 - t1)
-d_delta_d_13 = np.sqrt( (dv*(t3 - t1))**2 + (v*dt3)**2 + (v*dt1)**2 )
+# Time differences
+delta_t12 = t2 - t1  # t2 - t1
+delta_t13 = t3 - t1  # t3 - t1
+delta_t23 = t3 - t2  # t3 - t2
 
-delta_d_23 = v * (t3 - t2)
-d_delta_d_23 = np.sqrt( (dv*(t3 - t2))**2 + (v*dt3)**2 + (v*dt2)**2 )
+# Distance differences
+delta_d12 = v * delta_t12
+delta_d13 = v * delta_t13
+delta_d23 = v * delta_t23
 
-# Create grid
-x = np.linspace(0, L, 4000)
-y = np.linspace(0, W, 4000)
-X, Y = np.meshgrid(x, y)
+# Function to minimize
+def distance_difference(position, detector_positions, delta_d12, delta_d13):
+    x, y = position
+    d1 = np.sqrt((x - detector_positions[0, 0])**2 + (y - detector_positions[0, 1])**2)
+    d2 = np.sqrt((x - detector_positions[1, 0])**2 + (y - detector_positions[1, 1])**2)
+    d3 = np.sqrt((x - detector_positions[2, 0])**2 + (y - detector_positions[2, 1])**2)
+    
+    diff1 = d2 - d1 - delta_d12
+    diff2 = d3 - d1 - delta_d13
+    
+    return diff1**2 + diff2**2
 
-# Compute distances and their uncertainties
-epsilon = 1e-9  # Avoid division by zero
+# Initial guess (midpoint of detectors)
+initial_guess = np.mean(detector_positions, axis=0)
 
-D1 = np.sqrt((x2 - X)**2 + (y2 - Y)**2)
-D2 = np.sqrt((x1 - X)**2 + (y1 - Y)**2)
-D3 = np.sqrt((x3 - X)**2 + (y3 - Y)**2)
+# Minimize the function
+result = minimize(distance_difference, initial_guess, args=(detector_positions, delta_d12, delta_d13))
 
-# Uncertainties in distances
-dD1 = np.sqrt( (( (x2 - X)/(D1 + epsilon) * dx2 ))**2 + (( (y2 - Y)/(D1 + epsilon) * dy2 ))**2 )
-dD2 = np.sqrt( (( (x1 - X)/(D2 + epsilon) * dx1 ))**2 + (( (y1 - Y)/(D2 + epsilon) * dy1 ))**2 )
-dD3 = np.sqrt( (( (x3 - X)/(D3 + epsilon) * dx3 ))**2 + (( (y3 - Y)/(D3 + epsilon) * dy3 ))**2 )
+# Estimated position
+estimated_position = result.x
+print(f"Estimated position: ({estimated_position[0]:.2f}, {estimated_position[1]:.2f})")
 
-# Compute Z values and their uncertainties
-Z12 = D1 - D2 - delta_d_12
-dZ12 = np.sqrt(dD1**2 + dD2**2 + d_delta_d_12**2)
+# Function to plot hyperbola with uncertainty
+def plot_hyperbola_with_uncertainty(detector1, detector2, delta_d, ax, color, label, source_position):
+    x1, y1 = detector1
+    x2, y2 = detector2
+    
+    # Generate points for the hyperbola
+    x = np.linspace(0, L, 500)
+    y = np.linspace(0, W, 500)
+    X, Y = np.meshgrid(x, y)
+    
+    # Hyperbola equation: |d2 - d1| = delta_d
+    d1 = np.sqrt((X - x1)**2 + (Y - y1)**2)
+    d2 = np.sqrt((X - x2)**2 + (Y - y2)**2)
+    hyperbola = np.abs(d2 - d1) - np.abs(delta_d)
+    
+    # Filter out the branch that does not contain the source
+    # Use the source position to determine the correct branch
+    source_d1 = np.sqrt((source_position[0] - x1)**2 + (source_position[1] - y1)**2)
+    source_d2 = np.sqrt((source_position[0] - x2)**2 + (source_position[1] - y2)**2)
+    if source_d2 - source_d1 < 0:
+        hyperbola = -hyperbola  # Flip the hyperbola branch
+    
+    # Plot the hyperbola
+    ax.contour(X, Y, hyperbola, levels=[0], colors=color, label=label)
+    
+    # Propagate uncertainty in the hyperbola
+    # Uncertainty in delta_d due to uncertainties in time differences and wave speed
+    delta_d_uncertainty = np.sqrt((v * dt1)**2 + (v * dt2)**2 + (delta_t12 * dv)**2)
+    
+    # Plot uncertainty as a shaded region around the hyperbola
+    ax.contourf(X, Y, np.abs(hyperbola), levels=[0, delta_d_uncertainty], colors=color, alpha=0.2)
 
-Z13 = D1 - D3 - delta_d_13
-dZ13 = np.sqrt(dD1**2 + dD3**2 + d_delta_d_13**2)
-
-Z23 = D2 - D3 - delta_d_23
-dZ23 = np.sqrt(dD2**2 + dD3**2 + d_delta_d_23**2)
-
-# Create masks for uncertainty regions (1-sigma)
-mask12 = np.abs(Z12) <= dZ12
-mask13 = np.abs(Z13) <= dZ13
-mask23 = np.abs(Z23) <= dZ23
-
-# Plot settings
+# Create plot
 plt.figure(figsize=(10, 8))
-
-# Plot uncertainty regions
-plt.contourf(X, Y, mask12, levels=[0.5, 1.5], colors='blue', alpha=0.2, label="Uncertainty (Hyperbola 12)")
-plt.contourf(X, Y, mask13, levels=[0.5, 1.5], colors='green', alpha=0.2, label="Uncertainty (Hyperbola 13)")
-plt.contourf(X, Y, mask23, levels=[0.5, 1.5], colors='red', alpha=0.2, label="Uncertainty (Hyperbola 23)")
-
-# Plot hyperbolas
-plt.contour(X, Y, Z12, levels=[0], colors='blue', linewidths=2, label="Hyperbola 12")
-plt.contour(X, Y, Z13, levels=[0], colors='green', linewidths=2, label="Hyperbola 13")
-plt.contour(X, Y, Z23, levels=[0], colors='red', linewidths=2, label="Hyperbola 23")
+ax = plt.gca()
 
 # Plot detectors with error bars
-plt.errorbar([x1, x2, x3], [y1, y2, y3], 
-             xerr=[dx1, dx2, dx3], 
-             yerr=[dy1, dy2, dy3], 
-             fmt='o', color='black', label="Detectors",
-             ecolor='black', elinewidth=1, capsize=4, linestyle='None')
+plt.errorbar(x1, y1, xerr=dx1, yerr=dy1, fmt='o', color='red', label='Detector 1', capsize=5)
+plt.errorbar(x2, y2, xerr=dx2, yerr=dy2, fmt='o', color='green', label='Detector 2', capsize=5)
+plt.errorbar(x3, y3, xerr=dx3, yerr=dy3, fmt='o', color='purple', label='Detector 3', capsize=5)
 
-# Axes and labels
-plt.axhline(0, color='black', linewidth=0.5)
-plt.axvline(0, color='black', linewidth=0.5)
-plt.grid(True, linestyle='--', alpha=0.6)
-plt.xlim(0, L)
-plt.ylim(0, W)
-plt.gca().set_aspect('equal')
+# Plot estimated source position with error bars
+source_x_uncertainty = np.sqrt(dx1**2 + dx2**2 + dx3**2) / 3
+source_y_uncertainty = np.sqrt(dy1**2 + dy2**2 + dy3**2) / 3
+plt.errorbar(estimated_position[0], estimated_position[1], xerr=source_x_uncertainty, yerr=source_y_uncertainty, fmt='o', color='blue', label='Source', capsize=5)
+
+# Plot hyperbolas with uncertainty
+plot_hyperbola_with_uncertainty(detector_positions[0], detector_positions[1], delta_d12, ax, 'green', 'Hyperbola (D1-D2)', estimated_position)
+plot_hyperbola_with_uncertainty(detector_positions[0], detector_positions[2], delta_d13, ax, 'purple', 'Hyperbola (D1-D3)', estimated_position)
+plot_hyperbola_with_uncertainty(detector_positions[1], detector_positions[2], delta_d23, ax, 'orange', 'Hyperbola (D2-D3)', estimated_position)
+
+# Plot settings
 plt.xlabel('X Position')
 plt.ylabel('Y Position')
-plt.legend(loc='upper right', fontsize=10)
+plt.legend()
+plt.xlim(0, L)
+plt.ylim(0, W)
 
+# Show plot
 plt.show()
