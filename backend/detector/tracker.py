@@ -7,22 +7,26 @@ import json
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description='YOLOv8 Ball Tracking on Images')
-    parser.add_argument('--image_folder', type=str, required=True, help='Path to the folder containing images')
-    parser.add_argument('--output_folder', type=str, required=True, help='Path to save processed images')
     parser.add_argument('--output_json', type=str, default='output.json', help='Path to save the JSON file with central positions')
     return parser.parse_args()
 
 def main():
     args = parse_args()
-    image_folder = args.image_folder
-    output_folder = args.output_folder
     output_json = args.output_json  
 
-    os.makedirs(output_folder, exist_ok=True)  # Create output folder if not exists
+    current_directory = os.getcwd()
+    image_folder = os.path.join(current_directory, 'frames')
+    output_folder = os.path.join(current_directory, 'detector-output')
 
-    model = YOLO('model2.pt')
+    os.makedirs(output_folder, exist_ok=True)
+
+    model = YOLO('trained-model.pt')
     trajectory = []  
     central_positions = []  
+
+    if not os.path.exists(image_folder):
+        print(f"Error: The folder 'frames' does not exist in the current directory: {current_directory}")
+        return
 
     image_files = sorted([os.path.join(image_folder, f) for f in os.listdir(image_folder) if f.endswith(('.jpg', '.png', '.jpeg'))])
 
@@ -53,7 +57,7 @@ def main():
             cv2.line(frame, trajectory[i - 1], trajectory[i], (255, 0, 0), 2)
 
         output_path = os.path.join(output_folder, os.path.basename(image_file))
-        cv2.imwrite(output_path, frame)  # Save processed frame
+        cv2.imwrite(output_path, frame)  
     
     with open(output_json, 'w') as f:
         json.dump(central_positions, f, indent=4)
@@ -62,5 +66,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-# Run python bob-tracker.py --image_folder {path} --output_folder {path}
