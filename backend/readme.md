@@ -1,4 +1,5 @@
- # Backend code for dissertation
+ # Code for dissertation
+(Yes the directory is called backend there was going to be more and probably will be)
 
 Contains all code needed to simulate a gravitational wave detector array to determine the location of the source of waves.
 
