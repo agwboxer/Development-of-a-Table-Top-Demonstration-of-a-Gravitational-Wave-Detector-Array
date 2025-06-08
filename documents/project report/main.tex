@@ -1,6 +1,7 @@
-\documentclass[11pt]{report}							
+\documentclass[9pt]{report}							
 \usepackage{import}
 \usepackage{style}
+\usepackage{listings}
 %\usepackage[utf8]{inputenc}
 \pagenumbering{roman}
 
@@ -26,7 +27,28 @@
 \pagenumbering{arabic}
 \pagestyle{headings} 
 
-\chapter{Gravitational Wave Detectors}
-\section{Introduction}
+\chapter{Introduction}
+\import{sections/}{chapter1.tex}
+
+\chapter{Theoretical Background}
+\import{sections/}{chapter2.tex}
+
+\chapter{Experimental Setup and Methodology}
+\import{sections/}{chapter3.tex}
+
+\chapter{Results and Analysis}
+\import{sections/}{chapter4.tex}
+
+\chapter{Conclusion and Future Works}
+\import{sections/}{chapter5.tex}
+
+
+\appendix
+\chapter*{Appendix} 
+\addcontentsline{toc}{chapter}{Appendix} 
+\import{sections/}{appendix.tex}
+
+\bibliographystyle{vancouver}
+\bibliography{references}
 
 \end{document}
